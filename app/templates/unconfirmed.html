@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}确认您的帐号{% endblock %}
+{% block content %}
+    <h1>
+        您好,{{ current_user.username }}
+    </h1>
+    <h3>
+        您至今还未确认您的帐号
+    </h3>
+    <p>
+        在您可以浏览之前您需要先确认您的帐号。
+        检查您的邮箱,应该收到了一份确认链接的邮件
+    </p>
+    <p>
+        您是否重新需要一份邮件?
+        <a href="{{ url_for('auth.resend_email') }}">请点击这里</a>
+    </p>
+{% endblock %}

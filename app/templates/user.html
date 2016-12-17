@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="page-header">
+        {% for message in get_flashed_messages() %}
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {% endfor %}
+        <img class="img-rounded profile-thumbail" src="{{ user.gravatar(size=256) }}">
+        <div class="profile-header">
+            <h1>{{ user.username }}</h1>
+            {% if user.name or user.location %}
+            <p>
+                {% if user.name %}{{ user.name }}{% endif %}
+                {% if user.location %}
+                    <a href="http://map.baidu.com/?q={{ user.location }}">{{ user.location }}</a>
+                {% endif %}
+            </p>
+            {% endif %}
+            {% if current_user.is_authenticated %}
+            <p>
+                <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+            </p>
+            {% endif %}
+            {% if user.about_me %}
+            <p>{{ user.about_me }}</p>
+            {% endif %}
+            <p>注册时间:{{ moment(user.member_since).format('L') }}</p>
+            <p>上次登陆时间:{{ moment(user.last_seen).fromNow() }}</p>
+            <p>
+                {% if user == current_user %}
+                <a class="btn btn-default" href="{{ url_for('main.edit_profile') }}">
+                    编辑信息
+                </a>
+                {% endif %}
+                {% if current_user.is_administrator() %}
+                <a class="btn btn-danger" href="{{ url_for('main.edit_profile_admin', id=user.id) }}">
+                    编辑信息[管理员]
+                </a>
+                {% endif %}
+            </p>
+        </div>
+        <h3>{{ user.username }}发表的文章</h3>
+        {% include 'include/_post.html' %}
+    </div>
+{% endblock %}

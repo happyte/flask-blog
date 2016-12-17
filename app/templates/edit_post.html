@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %}编辑博客{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>编辑博客</h1>
+    </div>
+    <div class="container">
+        <form method="post">
+            {{ wtf.quick_form(form) }}
+        </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ pagedown.include_pagedown() }}
+{% endblock %}

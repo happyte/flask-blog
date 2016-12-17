@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <div class="container">
+
+        </div>
+    </div>
+    <div class="container">
+        {% for message in get_flashed_messages() %}
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {% endfor %}
+        <h1>
+            你好,
+            {% if current_user.is_authenticated %}
+                {{ current_user.username }}
+            {% else %}
+                Stranger
+            {% endif %}
+        </h1>
+        {% if current_user.can(Permission.WRITE_ARTICLES) %}
+        <form method="post">
+            {{ wtf.quick_form(form) }}
+        </form>
+        {% endif %}
+        {% include 'include/_post.html' %}
+        <div class="pagination">
+            <ul class="pagination">
+                <li {% if not pagination.has_prev %} class="disabled" {% endif %}>
+                    <a href="{% if pagination.has_prev %}{{ url_for('main.index',
+                    page=pagination.page - 1) }}{% else %}#{% endif %}" >
+                        &laquo;
+                    </a>
+                </li>
+                {% for p in pagination.iter_pages() %}
+                    {% if p %}
+                        {% if p == pagination.page %}
+                            <li class="active">
+                                <a href="{{ url_for('main.index',page=p) }}">{{ p }}</a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="{{ url_for('main.index',page=p) }}">{{ p }}</a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="disabled"><a href="#">&hellip;</a></li>
+                    {% endif %}
+                {% endfor %}
+                <li {% if not pagination.has_next %} class="disabled" {% endif %}>
+                    <a href="{% if pagination.has_next %}{{ url_for('main.index',
+                    page=pagination.page + 1) }}{% else %}#{% endif %}" >
+                        &raquo;
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ pagedown.include_pagedown() }}
+{% endblock %}
+

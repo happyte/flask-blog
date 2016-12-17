@@ -1,0 +1,4 @@
+<p>亲爱的 {{ user.username }},</p>
+<p>确认您的用户<a href="{{ url_for('auth.confirm', token=token, _external=True) }}">请点击这里</a>。</p>
+<p>同样,你可以复制下面的链接到浏览器的地址导航条上</p>
+<p>{{ url_for('auth.confirm', token=token, _external=True) }}</p>

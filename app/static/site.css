@@ -1,0 +1,53 @@
+.profile-thumbail {
+    position: absolute;
+}
+
+div.profile-header {
+    min-height: 260px;
+    margin-left: 280px;
+}
+
+ul.posts {
+    list-style-type: none;
+    margin: 16px 0px 0px 0px;
+    padding: 0px;
+    border-top: 1px solid #e0e0e0;       /*ul顶端加一条线*/
+}
+
+ul.posts li.post {
+    padding: 8px;
+    border-bottom: 1px solid #e0e0e0;    /*每个li底部加一条线*/
+}
+
+
+div.post-date {
+    float: right;                        /*日期最右边*/
+}
+
+div.post-author {
+    font-weight: bold;                   /*作者字体加粗*/
+}
+
+div.profile-thumbail {
+    position: absolute;
+}
+
+div.post-content {
+    margin-left: 48px;                  /*距离头像一定距离*/
+    min-height: 48px;                   /*内容最小高度限制*/
+}
+
+div.pagination {
+    width: 100%;
+    text-align: center;
+    padding: 0px;
+    margin: 5px;
+}
+
+div.post-footer {
+    text-align: right;
+}
+
+div.pagination li.active {
+    color: #2e6da4;
+}
