@@ -17,7 +17,7 @@ def index():
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('main.index'))
-    page = request.args.get('page', 1, type=int)       # 1代表如果没有明确指定，则默认渲染第一页,不指定的话第一页返回None
+    page = request.args.get('page',1, type=int)       # 1代表如果没有明确指定，则默认渲染第一页,为2的话默认来到第二页
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
                                     page, per_page=10,
                                     error_out=False)  # error_out=True页数超出范围返回404错误,False返回空列表
@@ -54,6 +54,53 @@ def user(username):
         abort(404)
     posts = user.posts.order_by(Post.timestamp.desc()).all()
     return render_template('user.html', user=user, posts=posts)
+
+# 关注用户
+@main.route('/follow/<username>')
+def follow(username):
+    u = User.query.filter_by(username=username).first()
+    if u is None:
+        flash(u'没有该用户')
+        return redirect(url_for('main.index'))
+    if current_user.is_following(u):
+        flash(u'已经关注了该用户')
+        return redirect(url_for('main.user', username=username))
+    current_user.follow(u)
+    flash(u'关注了 %s' % username)
+    return redirect(url_for('main.user', username=username))
+
+# 取消关注
+@main.route('/unfollow/<username>')
+def unfollow(username):
+    u = User.query.filter_by(username=username).first()
+    if u is None:
+        flash(u'没有该用户')
+        return redirect(url_for('main.index'))
+    if u.is_followed_by(current_user):
+        current_user.unfollow(u)
+        flash(u'取消对 %s 的关注' % username)
+        return redirect(url_for('main.user', username=username))
+
+# 列出所有的粉丝
+@main.route('/followers/<username>')
+def followers(username):
+    u = User.query.filter_by(username=username).first()
+    page = request.args.get('page', 1, type=int)
+    pagination = u.followers.paginate(page, per_page=10, error_out=False)
+    follows = [{'user':item.follower,'timestamp':item.timestamp}
+               for item in pagination.items]                      # 转换成一个字典列表
+    return render_template('followers.html', title=u'的粉丝',user=u, pagination=pagination, follows=follows)
+
+# 列出所有我的关注
+@main.route('/followed-by/<username>')
+def followed_by(username):
+    u = User.query.filter_by(username=username).first()
+    page = request.args.get('page', 1, type=int)
+    pagination = u.followed.paginate(page, per_page=10, error_out=False)
+    follows = [{'user':item.followed,'timestamp':item.timestamp}
+               for item in pagination.items]                      # 转换成一个字典列表
+    return render_template('followers.html', title=u'的关注',user=u, pagination=pagination, follows=follows)
+
 
 # 普通用户级别的编辑
 @main.route('/edit-profile',methods=['GET','POST'])
@@ -111,13 +158,14 @@ def edit(id):
         abort(403)
     form = PostForm()
     if form.validate_on_submit():
-        post.body = form.body.data
+        post.body = form.body.dataa
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('main.post',id=post.id))
     form = PostForm()
     form.body.data = post.body
     return render_template('edit_post.html', form=form)
+
 
 @main.app_context_processor
 def inject_permissions():

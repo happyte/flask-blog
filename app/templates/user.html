@@ -40,6 +40,19 @@
                 </a>
                 {% endif %}
             </p>
+            {% if current_user.can(Permission.FOLLOW) and user != current_user %}    <!--当前用户有关注的权限且不是自己,可以有follow和unfollow-->
+                {% if not current_user.is_following(user) %}
+                    <a href="{{ url_for('main.follow', username=user.username) }}" class="btn btn-primary">关注</a>
+                {% else %}
+                    <a href="{{ url_for('main.unfollow', username=user.username) }}" class="btn btn-default">不关注</a>
+                {% endif %}
+            {% endif %}
+            <a href="{{ url_for('main.followers',username=user.username) }}">
+                粉丝人数:<span class="badge">{{ user.followers.count() }}</span>
+            </a>
+            <a href="{{ url_for('main.followed_by',username=user.username) }}">
+                关注人数:<span class="badge">{{ user.followed.count() }}</span>
+            </a>
         </div>
         <h3>{{ user.username }}发表的文章</h3>
         {% include 'include/_post.html' %}

@@ -47,6 +47,12 @@ class Role(db.Model):
         db.session.add_all(map(lambda r: Role(name=r), ['Guests', 'Administrator']))
         db.session.commit()
 
+class Follow(db.Model):
+    __tablename__ = 'follows'
+    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)     # 代表关注者,与relationship的follower对应
+    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)     # 代表被关注者,与relationship的followed对应
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -60,9 +66,17 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(64))         # 用户信息中的昵称
     location = db.Column(db.String(64))     # 用户地址
     about_me = db.Column(db.Text())         # 用户介绍
-    member_since = db.Column(db.DATETIME(), default=datetime.utcnow)    # 注册时间,datetime.utcnow不用带上括号
-    last_seen = db.Column(db.DATETIME(), default=datetime.utcnow)       # 上次访问时间
+    member_since = db.Column(db.DATETIME(), default=datetime.utcnow)             # 注册时间,datetime.utcnow不用带上括号
+    last_seen = db.Column(db.DATETIME(), default=datetime.utcnow)                # 上次访问时间
     posts = db.relationship('Post', backref='author', lazy='dynamic')            # 一个用户有多条发表，一对多
+    followed = db.relationship('Follow', foreign_keys=[Follow.follower_id],      # 该用户关注了其它用户，对于其它用户而言，该用户就是它的追随者(关注者)
+                               backref=db.backref('follower', lazy='joined'),    # 对应follower_id
+                               lazy='dynamic',
+                               cascade='all, delete-orphan')
+    followers = db.relationship('Follow', foreign_keys=[Follow.followed_id],     # 该用户的关注者们，对于关注者们而言，关注者们关注了该用户
+                                backref=db.backref('followed', lazy='joined'),   # 对应followed_id
+                                lazy='dynamic',
+                                cascade='all, delete-orphan')
 
 
     def __init__(self, **kwargs):
@@ -72,6 +86,24 @@ class User(UserMixin, db.Model):
                 self.itsrole = Role.query.filter_by(permissions=0xff).first()    # 权限为管理者
             else:
                 self.itsrole =  Role.query.filter_by(default=True).first()       # 默认用户
+
+    def follow(self, user):                          # 关注user
+        if not self.is_following(user):
+            f = Follow(follower=self, followed=user)     # self为关注者,follower_id与之对应，与此同时self.followed(self关注了其它用户)添加一个新值
+            db.session.add(f)                            # user为被关注者,followed_id与之对应,与此同时user.followers(user被其它用户关注)添加一个新值
+            db.session.commit()
+
+    def unfollow(self, user):                        # 取消对user的关注
+        f = self.followed.filter_by(followed_id=user.id).first()       # 从该用户关注的其它用户中找出followed_id=user.id的用户
+        if f is not None:
+            db.session.delete(f)
+            db.session.commit()
+
+    def is_following(self, user):                    # 是否关注该user
+        return self.followed.filter_by(followed_id=user.id).first() is not None
+
+    def is_followed_by(self, user):                  # 是否被user关注
+        return self.followers.filter_by(follower_id=user.id).first() is not None
 
     def can(self, permissions):          # 检查用户的权限
         return self.itsrole is not None and \

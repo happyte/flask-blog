@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="dataSourceStorageLocal">
-    <data-source name="Sqlite (Xerial) - db.sqlite" uuid="ebf6e3f2-9123-446c-8ef5-8d10c64f044b">
+    <data-source name="Sqlite (Xerial) - db.sqlite" uuid="3ba68f6a-4ab5-49f3-96bf-fcefe6a2544a">
       <database-info product="SQLite" version="3.8.11" jdbc-version="2.1" driver-name="SQLiteJDBC" driver-version="native" />
       <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
       <secret-storage>master_key</secret-storage>
