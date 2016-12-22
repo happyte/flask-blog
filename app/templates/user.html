@@ -48,10 +48,10 @@
                 {% endif %}
             {% endif %}
             <a href="{{ url_for('main.followers',username=user.username) }}">
-                粉丝人数:<span class="badge">{{ user.followers.count() }}</span>
+                粉丝人数:<span class="badge">{{ user.followers.count() - 1 }}</span>
             </a>
             <a href="{{ url_for('main.followed_by',username=user.username) }}">
-                关注人数:<span class="badge">{{ user.followed.count() }}</span>
+                关注人数:<span class="badge">{{ user.followed.count() - 1 }}</span>
             </a>
         </div>
         <h3>{{ user.username }}发表的文章</h3>

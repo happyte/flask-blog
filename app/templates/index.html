@@ -29,7 +29,19 @@
             {{ wtf.quick_form(form) }}
         </form>
         {% endif %}
-        {% include 'include/_post.html' %}
+        <div class="post-tabs">
+            <ul class="nav nav-tabs">
+                <li {% if not show_followed %}class="active"{% endif %}>
+                    <a href="{{ url_for('main.show_all') }}">所有</a>
+                </li>
+                {% if current_user.is_authenticated %}
+                <li {% if show_followed %}class="active"{% endif %}>
+                    <a href="{{ url_for('main.show_followed') }}">我的关注</a>
+                </li>
+                {% endif %}
+            </ul>
+            {% include 'include/_post.html' %}
+        </div>
         <div class="pagination">
             {{ macros.pagination_widget(pagination, 'main.index') }}
         </div>

@@ -105,6 +105,12 @@ class User(UserMixin, db.Model):
     def is_followed_by(self, user):                  # 是否被user关注
         return self.followers.filter_by(follower_id=user.id).first() is not None
 
+    @property
+    def followed_posts(self):                       # 列出该用户关注的所有文章
+        return Post.query.join(Follow, Follow.followed_id == Post.author_id)\
+                    .filter(Follow.follower_id == self.id)
+
+
     def can(self, permissions):          # 检查用户的权限
         return self.itsrole is not None and \
                (self.itsrole.permissions & permissions) == permissions
@@ -177,6 +183,14 @@ class User(UserMixin, db.Model):
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
+
+    @staticmethod                           # 自己关注自己
+    def add_self_follows():
+        for user in User.query.all():
+            if not user.is_following(user):
+                user.follow(user)
+                db.session.add(user)
+                db.session.commit()
 
     # @staticmethod
     # def on_create(target, value, oldvalue, initiator):

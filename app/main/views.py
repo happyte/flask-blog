@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-from flask import render_template, flash, abort, redirect, url_for, request, current_app
+from flask import render_template, flash, abort, redirect, url_for, request, current_app, make_response
 from flask_login import login_required, current_user
 from ..decorators import admin_required, permission_required
 from ..models import Permission, User, Role, Post
@@ -12,17 +12,38 @@ from .. import db
 def index():
     form = PostForm()
     if current_user.can(Permission.WRITE_ARTICLES) and \
-        form.validate_on_submit():
+            form.validate_on_submit():
         post = Post(body=form.body.data, author=current_user._get_current_object())
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('main.index'))
+    show_followed = False
+    if current_user.is_authenticated:
+        show_followed = bool(request.cookies.get('show_followed'))   # 判断cookie是否大于0
+    if show_followed:
+        query = current_user.followed_posts
+    else:
+        query = Post.query
     page = request.args.get('page',1, type=int)       # 1代表如果没有明确指定，则默认渲染第一页,为2的话默认来到第二页
-    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
+    pagination = query.order_by(Post.timestamp.desc()).paginate(
                                     page, per_page=10,
                                     error_out=False)  # error_out=True页数超出范围返回404错误,False返回空列表
     posts = pagination.items
-    return render_template('index.html', form=form, posts=posts, pagination=pagination)
+    return render_template('index.html', show_followed=show_followed, form=form, posts=posts, pagination=pagination)
+
+@main.route('/all')
+@login_required
+def show_all():
+    response = make_response(redirect(url_for('main.index')))
+    response.set_cookie('show_followed','',max_age=30*24*60*60)    # 通过cookie的值判断点击了all还是followed
+    return response
+
+@main.route('/followed')
+@login_required
+def show_followed():
+    response = make_response(redirect(url_for('main.index')))
+    response.set_cookie('show_followed','2',max_age=30*24*60*60)
+    return response
 
 # 首页中文章固定链接路由
 @main.route('/post/<int:id>')
