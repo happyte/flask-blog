@@ -1,0 +1,46 @@
+<ul class="comments">
+    {% for comment in comments %}
+        <li class="comment">
+            <div class="comment-thumbail">
+                <a href="{{ url_for('main.user',username=comment.author.username)}}">
+                    <img class="img-rounded profile-thumbail"
+                    src="{{ comment.author.gravatar(32) }}">
+                </a>
+            </div>
+            <div class="comment-content">
+                <div class="comment-date">{{ moment(comment.timestamp).fromNow() }}</div>
+                <div class="comment-author">
+                    <a href="{{ url_for('main.user',username=comment.author.username) }}">
+                        {{ comment.author.username }}
+                    </a>
+                </div>
+                <div class="comment-body">
+                    {% if comment.disabled %}                    <!--评论被禁止了-->
+                        <p><i>该条评论已经被协管员禁止了</i></p>
+                    {% endif %}
+                    {% if moderate or not comment.disabled %}
+                        {% if comment.body_html %}
+                            {{ comment.body_html|safe }}
+                        {% else %}
+                            {{ comment.body }}
+                        {% endif %}
+                    {% endif %}
+                </div>
+                {% if moderate %}       <!--moderate设为True,而普通用户发表评论是没有moderate这个变量的-->
+                    <br>
+                    {% if comment.disabled %}
+                        <a class="btn btn-default btn-xs"
+                           href="{{ url_for('main.moderate_enable',id=comment.id,page=page) }}">
+                            Enable
+                        </a>
+                    {% else %}
+                        <a class="btn btn-danger btn-xs"
+                            href="{{ url_for('main.moderate_disable',id=comment.id,page=page) }}">
+                            Disable
+                        </a>    <!--btn-xs按键好像变小了-->
+                    {% endif %}
+                {% endif %}
+            </div>
+        </li>
+    {% endfor %}
+</ul>

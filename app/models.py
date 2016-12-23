@@ -77,6 +77,7 @@ class User(UserMixin, db.Model):
                                 backref=db.backref('followed', lazy='joined'),   # 对应followed_id
                                 lazy='dynamic',
                                 cascade='all, delete-orphan')
+    comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
 
     def __init__(self, **kwargs):
@@ -196,6 +197,23 @@ class User(UserMixin, db.Model):
     # def on_create(target, value, oldvalue, initiator):
     #     target.role = Role.query().filter_by(name='Guests').first()
 
+class Comment(db.Model):
+    __tablename__ = 'comments'
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    body_html = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    disabled = db.Column(db.Boolean)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    @staticmethod
+    def on_body_changed(target, value, oldvalue, initiator):
+        allow_tags = ['a', 'abbr', 'acronym', 'b', 'code',
+                      'em', 'strong']
+        target.body_html = bleach.linkify(bleach.clean(markdown(value, output_format='html'),
+                                                       tags=allow_tags, strip=True))
+
 class AnonymousUser(AnonymousUserMixin):   # 匿名用户
     def can(self, permissions):
         return False
@@ -210,6 +228,7 @@ class Post(db.Model):
     body_html = db.Column(db.Text)                   # 服务器上的富文本处理字段
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    comments = db.relationship('Comment', backref='post', lazy='dynamic')
 
     @staticmethod
     def generate_fake(count=10):
@@ -242,3 +261,4 @@ login_manager.anonymous_user = AnonymousUser   # 将其设为用户未登陆时�
 
 # db.event.listen(User.username, 'set', User.on_create)
 db.event.listen(Post.body, 'set', Post.on_body_changed)
+db.event.listen(Comment.body, 'set', Comment.on_body_changed)

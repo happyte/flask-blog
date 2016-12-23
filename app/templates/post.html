@@ -3,5 +3,12 @@
 {% import "include/_macros.html" as macros %}
 
 {% block content %}
-    {% include "include/_post.html" %}
+    {% include "include/_post.html" %}       <!--发表的博客文章-->
+    <div class="comment-from">               <!-- 评论表单-->
+        {{ wtf.quick_form(form) }}
+    </div>
+    {% include "include/_comment.html" %}
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, 'main.post', id=posts[0].id) }}
+    </div>
 {% endblock %}

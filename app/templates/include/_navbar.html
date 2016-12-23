@@ -12,7 +12,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <span class="navbar-brand">Flask入门</span>
+            <span class="navbar-brand">Flask</span>
         </div>
         <div class="navbar-collapse collapse"
              id="7bc75dbef69e41ff2452de70079c8ece1320ea7c">
@@ -21,13 +21,18 @@
                     <a href="{{ url_for('main.index') }}" >主页</a>
                 </li>
                 <li {% if url_for('main.about') is current_link %}class="active"{% endif %}>
-                    <a href="{{ url_for('main.about') }}" >关于</a>
+                    <a href="{{ url_for('main.about') }}" >写博客</a>
                 </li>
                 {% if current_user.is_authenticated %}
                     <li><a href="{{ url_for('main.user',username=current_user.username) }}">个人资料</a></li>
                 {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                {% if current_user.can(Permission.MODERATE_COMMENTS) %}
+                    <li>
+                        <a href="{{ url_for('main.moderate') }}">管理评论</a>
+                    </li>
+                {% endif %}
                 {% if current_user.is_authenticated %}
                     <li>
                         <a href="{{ url_for('auth.logout') }}">

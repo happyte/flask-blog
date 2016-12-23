@@ -10,6 +10,10 @@ class PostForm(FlaskForm):
     body = PageDownField(label=u'发表博客', validators=[DataRequired()])
     submit = SubmitField(label=u'提交')
 
+class CommentForm(FlaskForm):
+    body = PageDownField(label=u'发表评论', validators=[DataRequired()])
+    submit = SubmitField(label=u'提交')
+
 
 # 普通用户登陆表单
 class EditProfileForm(FlaskForm):

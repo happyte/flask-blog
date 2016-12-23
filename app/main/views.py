@@ -2,9 +2,9 @@
 from flask import render_template, flash, abort, redirect, url_for, request, current_app, make_response
 from flask_login import login_required, current_user
 from ..decorators import admin_required, permission_required
-from ..models import Permission, User, Role, Post
+from ..models import Permission, User, Role, Post, Comment
 from . import main
-from .forms import EditProfileForm, EditProfileAdministratorForm, PostForm
+from .forms import EditProfileForm, EditProfileAdministratorForm, PostForm, CommentForm
 from .. import db
 
 
@@ -45,11 +45,28 @@ def show_followed():
     response.set_cookie('show_followed','2',max_age=30*24*60*60)
     return response
 
-# 首页中文章固定链接路由
-@main.route('/post/<int:id>')
+# 首页中文章固定链接路由,加上评论表单
+@main.route('/post/<int:id>', methods=['GET','POST'])
 def post(id):
     post = Post.query.get_or_404(id)
-    return render_template('post.html', posts=[post])
+    form = CommentForm()
+    if form.validate_on_submit():
+        comment = Comment(body=form.body.data,
+                          post=post,
+                          author=current_user._get_current_object(),
+                          )
+        db.session.add(comment)
+        db.session.commit()
+        return redirect(url_for('main.post', id=post.id, page=-1))    # 来到评论的最后一页
+    page = request.args.get('page',1,type=int)
+    if page == -1:
+        page = (post.comments.count()-1)/10 + 1
+    pagination = post.comments.order_by(Comment.timestamp.asc()).paginate(
+                    page, per_page=10, error_out=False
+                    )
+    comments = pagination.items
+    return render_template('post.html', posts=[post], form=form,
+                           comments=comments, pagination=pagination)
 
 @main.route('/about')
 def about():
@@ -187,6 +204,39 @@ def edit(id):
     form.body.data = post.body
     return render_template('edit_post.html', form=form)
 
+# 协管员管理评论,所有评论
+@main.route('/moderate', methods=['GET','POST'])
+@login_required
+@permission_required(Permission.MODERATE_COMMENTS)
+def moderate():
+    page = request.args.get('page',1,type=int)
+    pagination = Comment.query.order_by(Comment.timestamp.desc()).paginate(
+                                        page, per_page=10, error_out=False)
+    comments = pagination.items
+    return render_template('moderate.html',
+                           comments=comments, pagination=pagination, page=page)
+
+# 禁止该条评论
+@main.route('/moderate/disable/<int:id>')
+@login_required
+@permission_required(Permission.MODERATE_COMMENTS)
+def moderate_disable(id):
+    comment = Comment.query.get_or_404(id)
+    comment.disabled = True
+    db.session.add(comment)
+    db.session.commit()
+    return redirect(url_for('main.moderate',page=request.args.get('page',1,type=int)))
+
+# 使能该条评论
+@main.route('/moderate/enable/<int:id>')
+@login_required
+@permission_required(Permission.MODERATE_COMMENTS)
+def moderate_enable(id):
+    comment = Comment.query.get_or_404(id)
+    comment.disabled = False
+    db.session.add(comment)
+    db.session.commit()
+    return redirect(url_for('main.moderate', page=request.args.get('page', 1, type=int)))
 
 @main.app_context_processor
 def inject_permissions():

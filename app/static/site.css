@@ -45,7 +45,7 @@ div.post-content {
     min-height: 48px;                   /*内容最小高度限制*/
 }
 
-div.pagination {
+div.pagination {                       /*底部分页栏*/
     width: 100%;
     text-align: center;
     padding: 0px;
@@ -58,4 +58,34 @@ div.post-footer {
 
 div.pagination li.active {
     color: #2e6da4;
+}
+
+div.comment-from {
+    margin: 16px 32px 16px 32px;    /*4:左，2:右, 1:上 3:下*/
+}
+
+ul.comments {
+    list-style-type: none;
+}
+
+ul.comments li.comment {
+    padding: 8px;
+    border-bottom: 1px solid #e0e0e0;    /*每个li底部加一条线*/
+}
+
+div.comment-thumbail {
+    position: absolute;
+}
+
+div.comment-content {
+    margin-left: 48px;
+    min-height: 30px;
+}
+
+div.comment-date {
+    float: right;
+}
+
+div.comment-author {
+    font-weight: bold;
 }
