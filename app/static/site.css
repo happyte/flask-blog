@@ -27,6 +27,10 @@ ul.posts li.post {
     border-bottom: 1px solid #e0e0e0;    /*每个li底部加一条线*/
 }
 
+div.post-content {
+    margin-left: 48px;                  /*距离头像一定距离*/
+    min-height: 48px;                   /*内容最小高度限制*/
+}
 
 div.post-date {
     float: right;                        /*日期最右边*/
@@ -36,13 +40,18 @@ div.post-author {
     font-weight: bold;                   /*作者字体加粗*/
 }
 
-div.profile-thumbail {
-    position: absolute;
+div.post-title {
+    margin-top: 18px;
+    font-size: 20px;
+    font-weight: bold;
 }
 
-div.post-content {
-    margin-left: 48px;                  /*距离头像一定距离*/
-    min-height: 48px;                   /*内容最小高度限制*/
+div.post-body {
+    margin-top: 18px;
+}
+
+div.profile-thumbail {
+    position: absolute;
 }
 
 div.pagination {                       /*底部分页栏*/
@@ -88,4 +97,14 @@ div.comment-date {
 
 div.comment-author {
     font-weight: bold;
+}
+
+div.form-title {
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+div.form-body {
+    margin-top: 16px;
+    width: 98%;
 }

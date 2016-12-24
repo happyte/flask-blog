@@ -3,6 +3,7 @@
 {% import "include/_macros.html" as macros %}
 
 {% block content %}
+    {% set post_body = True %}          <!--需要显示文章内容-->
     {% include "include/_post.html" %}       <!--发表的博客文章-->
     <div class="comment-from">               <!-- 评论表单-->
         {{ wtf.quick_form(form) }}

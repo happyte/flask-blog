@@ -10,13 +10,6 @@ from .. import db
 
 @main.route('/', methods=['GET','POST'])
 def index():
-    form = PostForm()
-    if current_user.can(Permission.WRITE_ARTICLES) and \
-            form.validate_on_submit():
-        post = Post(body=form.body.data, author=current_user._get_current_object())
-        db.session.add(post)
-        db.session.commit()
-        return redirect(url_for('main.index'))
     show_followed = False
     if current_user.is_authenticated:
         show_followed = bool(request.cookies.get('show_followed'))   # 判断cookie是否大于0
@@ -29,7 +22,8 @@ def index():
                                     page, per_page=10,
                                     error_out=False)  # error_out=True页数超出范围返回404错误,False返回空列表
     posts = pagination.items
-    return render_template('index.html', show_followed=show_followed, form=form, posts=posts, pagination=pagination)
+    return render_template('index.html', show_followed=show_followed,
+                           posts=posts, pagination=pagination)
 
 @main.route('/all')
 @login_required
@@ -68,9 +62,18 @@ def post(id):
     return render_template('post.html', posts=[post], form=form,
                            comments=comments, pagination=pagination)
 
-@main.route('/about')
-def about():
-    return 'About'
+@main.route('/blog',methods=['GET','POST'])
+@login_required
+def blog():
+    form = PostForm()
+    if current_user.can(Permission.WRITE_ARTICLES) and \
+            form.validate_on_submit():
+        post = Post(title=form.title.data,body=form.body.data,
+                    author=current_user._get_current_object())
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('main.index'))
+    return render_template('blog.html',form=form)
 
 
 @main.route('/admin')      # 在登陆状态下只允许管理者进入，否则来到403禁止登陆界面
@@ -196,11 +199,13 @@ def edit(id):
         abort(403)
     form = PostForm()
     if form.validate_on_submit():
-        post.body = form.body.dataa
+        post.title = form.title.data
+        post.body = form.body.data
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('main.post',id=post.id))
     form = PostForm()
+    form.title.data = post.title
     form.body.data = post.body
     return render_template('edit_post.html', form=form)
 

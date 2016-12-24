@@ -21,18 +21,13 @@
             {% if current_user.is_authenticated %}
                 {{ current_user.username }}
             {% else %}
-                Stranger
+                请先登陆
             {% endif %}
         </h1>
-        {% if current_user.can(Permission.WRITE_ARTICLES) %}
-        <form method="post">
-            {{ wtf.quick_form(form) }}
-        </form>
-        {% endif %}
         <div class="post-tabs">
             <ul class="nav nav-tabs">
                 <li {% if not show_followed %}class="active"{% endif %}>
-                    <a href="{{ url_for('main.show_all') }}">所有</a>
+                    <a href="{{ url_for('main.show_all') }}">所有文章</a>
                 </li>
                 {% if current_user.is_authenticated %}
                 <li {% if show_followed %}class="active"{% endif %}>

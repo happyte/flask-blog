@@ -20,8 +20,8 @@
                 <li {% if url_for('main.index') is current_link %}class="active"{% endif %}>
                     <a href="{{ url_for('main.index') }}" >主页</a>
                 </li>
-                <li {% if url_for('main.about') is current_link %}class="active"{% endif %}>
-                    <a href="{{ url_for('main.about') }}" >写博客</a>
+                <li {% if url_for('main.blog') is current_link %}class="active"{% endif %}>
+                    <a href="{{ url_for('main.blog') }}" >写博客</a>
                 </li>
                 {% if current_user.is_authenticated %}
                     <li><a href="{{ url_for('main.user',username=current_user.username) }}">个人资料</a></li>

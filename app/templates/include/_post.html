@@ -14,13 +14,20 @@
                         {{ post.author.username }}
                     </a>
                 </div>
-                <div class="post-body">
-                    {% if post.body_html %}
-                        {{ post.body_html|safe }}
-                    {% else %}
-                        {{ post.body }}
-                    {% endif %}
+                <div class="post-title">
+                    <span class="link_title">
+                        {{ post.title }}
+                    </span>
                 </div>
+                {% if post_body %}
+                    <div class="post-body">
+                        {% if post.body_html %}
+                            {{ post.body_html|safe }}
+                        {% else %}
+                            {{ post.body }}
+                        {% endif %}
+                    </div>
+                {% endif %}
                 <div class="post-footer">
                     {% if current_user == post.author %}
                         <a href="{{ url_for('main.edit',id=post.id) }}">

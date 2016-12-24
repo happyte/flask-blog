@@ -224,6 +224,7 @@ class AnonymousUser(AnonymousUserMixin):   # 匿名用户
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.Text)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)                   # 服务器上的富文本处理字段
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
@@ -239,17 +240,31 @@ class Post(db.Model):
         user_count = User.query.count()
         for i in range(count):
             u = User.query.offset(randint(0, user_count-1)).first()
-            p = Post(body=forgery_py.lorem_ipsum.sentences(randint(1,3)),
-                    timestamp=forgery_py.date.date(True),
-                    author=u)
+            p = Post(title=forgery_py.lorem_ipsum.sentence(),
+                     body=forgery_py.lorem_ipsum.sentences(randint(1,3)),
+                     timestamp=forgery_py.date.date(True),
+                     author=u)
             db.session.add(p)
             db.session.commit()
+
+    @staticmethod                # 给所有发表博客文章添加标题
+    def generate_title():
+        from random import seed
+        import forgery_py
+
+        seed()
+        posts = Post.query.all()
+        for post in posts:
+            if post.title is None:
+                post.title = forgery_py.lorem_ipsum.sentence()
+                db.session.add(post)
+        db.session.commit()
 
     @staticmethod
     def on_body_changed(target, value, oldvalue, initiator):
         allow_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
                       'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                      'h1', 'h2', 'h3', 'p']
+                      'h1', 'h2', 'h3', 'p', 'span', 'code', 'pre']
         target.body_html = bleach.linkify(bleach.clean(markdown(value, output_format='html'),
                                                        tags=allow_tags, strip=True))
 
