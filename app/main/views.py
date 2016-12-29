@@ -247,29 +247,3 @@ def moderate_enable(id):
 def inject_permissions():
     return dict(Permission=Permission)
 
-
-@main.app_errorhandler(404)
-def page_not_found(error):
-    return render_template('404.html'),404
-
-@main.app_errorhandler(403)
-def forbidden_enter(error):
-    return render_template('403.html'),403
-
-
-# @main.route('/upload',methods=['GET','POST'])
-# def upload():
-#     if request.method == 'POST':
-#         f = request.files['file']
-#         basepath = path.abspath(path.dirname(__file__))
-#         print basepath
-#         uploadpath = path.join(basepath,'static/uploads/')
-#         print uploadpath
-#         f.save(uploadpath+secure_filename(f.filename))
-#         return redirect(url_for('upload'))
-#     return render_template('upload.html')
-
-
-# @main.route('/user/<regex("[a-z]{3}"):username>')
-# def user(username):
-#     return 'User %s' % username

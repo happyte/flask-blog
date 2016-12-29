@@ -42,7 +42,7 @@ def create_app():
     app.config['MAIL_PASSWORD'] = environ.get('MAIL_PASSWORD')
     app.config['FLASK_ADMIN'] = environ.get('FLASK_ADMIN')
     app.config['POSTS_PER_PAGE'] = environ.get('POSTS_PER_PAGE')
-    # nav.register_element('top', Navbar(u'Flask入门',
+    # nav.register_element('top', Navbr(u'Flask入门',
     #                                    View(u'主页', 'index'),
     #                                    View(u'关于', 'about'),
     #                                    View(u'服务', 'services'),
@@ -57,8 +57,10 @@ def create_app():
 
     from .main import main as main_blueprint
     from .auth import auth as auth_blueprint
+    from .api_1_0 import api as api_1_0_blueprint    # 注册api蓝图
     app.register_blueprint(main_blueprint, static_folder='static', template_folder='templates')
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
+    app.register_blueprint(api_1_0_blueprint, url_prefix='/api/v1_0')
 
     @app.template_test('current_link')
     def current_link(link):

@@ -3,7 +3,7 @@ from . import db, login_manager
 from flask_login import UserMixin, AnonymousUserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from flask import current_app, request
+from flask import current_app, request, url_for
 from datetime import datetime
 import hashlib
 from markdown import markdown
@@ -193,9 +193,20 @@ class User(UserMixin, db.Model):
                 db.session.add(user)
                 db.session.commit()
 
-    # @staticmethod
-    # def on_create(target, value, oldvalue, initiator):
-    #     target.role = Role.query().filter_by(name='Guests').first()
+    def generate_auth_token(self, expiration=3600):
+        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+        return s.dumps({'id': self.id})
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        return User.query.get(data['id'])
+
+
 
 class Comment(db.Model):
     __tablename__ = 'comments'
@@ -230,6 +241,16 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
+
+    def to_json(self):
+        json_post = {
+            'url': url_for('api.get_post', id=self.id, _external=True),
+            'body': self.body,
+            'body_html': self.body_html,
+            'timestamp': self.timestamp,
+            'comment_count': self.comments.count()
+        }
+        return json_post
 
     @staticmethod
     def generate_fake(count=10):
@@ -274,6 +295,5 @@ def load_user(user_id):
 
 login_manager.anonymous_user = AnonymousUser   # 将其设为用户未登陆时的current_user的值
 
-# db.event.listen(User.username, 'set', User.on_create)
 db.event.listen(Post.body, 'set', Post.on_body_changed)
 db.event.listen(Comment.body, 'set', Comment.on_body_changed)
