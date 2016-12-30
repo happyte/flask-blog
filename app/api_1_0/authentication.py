@@ -11,7 +11,6 @@ auth = HTTPBasicAuth()
 # api验证用户是否登陆,每次验证api先来到这个装饰器函数,在来到before_request函数
 @auth.verify_password
 def verify_password(email_or_token, password):
-    print '='*50
     if email_or_token == '':                  # 匿名用户
         g.current_user = AnonymousUser()
         return True
@@ -37,7 +36,6 @@ def get_token():
 @api.before_app_request
 @auth.login_required
 def before_request():
-    print '-'*50
     if not g.current_user.is_anonymous and not g.current_user.confirmed:
         return forbidden('Unconfirmed account')
 

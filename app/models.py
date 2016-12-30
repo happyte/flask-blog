@@ -79,6 +79,16 @@ class User(UserMixin, db.Model):
                                 cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
+    def to_json(self):
+        user_json = {
+            'url': url_for('api.get_user', id=self.id, _external=True),
+            'username': self.username,
+            'member_since': self.member_since,
+            'last_seen': self.last_seen,
+            'post_count': self.posts.count()
+        }
+        return user_json
+
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)        # 初始化父类
@@ -218,6 +228,22 @@ class Comment(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
+    @staticmethod  # 这个为静态方法是因为客户端不能指定评论所属博客和作者，只有服务器可以指定为当前用户
+    def from_json(json_body):
+        body = json_body.get('body')
+        if body is None or body == '':
+            print 'error'
+        return Comment(body=body)
+
+    def to_json(self):
+        comment_json = {
+            'url': url_for('api.get_comment', id=self.id, _external=True),
+            'body': self.body,
+            'body_html': self.body_html,
+            'timestamp': self.timestamp
+        }
+        return comment_json
+
     @staticmethod
     def on_body_changed(target, value, oldvalue, initiator):
         allow_tags = ['a', 'abbr', 'acronym', 'b', 'code',
@@ -242,9 +268,18 @@ class Post(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
 
+    @staticmethod      # 这个为静态方法是因为客户端不能指定文章作者，只有服务器可以指定为当前用户
+    def from_json(json_body):
+        title = json_body.get('title')
+        body = json_body.get('body')
+        if body is None or body == '':
+            print 'error'
+        return Post(title=title, body=body)
+
     def to_json(self):
         json_post = {
             'url': url_for('api.get_post', id=self.id, _external=True),
+            'title': self.title,
             'body': self.body,
             'body_html': self.body_html,
             'timestamp': self.timestamp,
