@@ -68,7 +68,8 @@ class User(UserMixin, db.Model):
     about_me = db.Column(db.Text())         # 用户介绍
     member_since = db.Column(db.DATETIME(), default=datetime.utcnow)             # 注册时间,datetime.utcnow不用带上括号
     last_seen = db.Column(db.DATETIME(), default=datetime.utcnow)                # 上次访问时间
-    posts = db.relationship('Post', backref='author', lazy='dynamic')            # 一个用户有多条发表，一对多
+    posts = db.relationship('Post', backref='author', lazy='dynamic',
+                            cascade='all, delete-orphan')            # 一个用户有多条发表，一对多
     followed = db.relationship('Follow', foreign_keys=[Follow.follower_id],      # 该用户关注了其它用户，对于其它用户而言，该用户就是它的追随者(关注者)
                                backref=db.backref('follower', lazy='joined'),    # 对应follower_id
                                lazy='dynamic',
@@ -324,7 +325,7 @@ class Post(db.Model):
         target.body_html = bleach.linkify(bleach.clean(markdown(value, output_format='html'),
                                                        tags=allow_tags, strip=True))
 
-@login_manager.user_loader      #加载用户的回调函数,成功后得到当前用户
+@login_manager.user_loader      # 加载用户的回调函数,成功后得到当前用户
 def load_user(user_id):
     return User.query.get(int(user_id))
 

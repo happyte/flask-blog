@@ -34,6 +34,7 @@ def register():
     if form.validate_on_submit():
         user = User(username=form.username.data,
                     password=form.password.data, email=form.email.data)  # 新添加一个用户到数据库中
+        User.add_self_follows()               # 把自己添加成自己的关注
         db.session.add(user)
         db.session.commit()
         token = user.generate_confirm_token()                            # 产生一个令牌
