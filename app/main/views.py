@@ -6,6 +6,7 @@ from ..models import Permission, User, Role, Post, Comment
 from . import main
 from .forms import EditProfileForm, EditProfileAdministratorForm, PostForm, CommentForm
 from .. import db
+from flask_sqlalchemy import get_debug_queries
 
 
 @main.route('/', methods=['GET','POST'])
@@ -246,4 +247,25 @@ def moderate_enable(id):
 @main.app_context_processor
 def inject_permissions():
     return dict(Permission=Permission)
+
+@main.route('/shutdown')
+def server_shutdown():
+    if not current_app.testing:
+        abort(404)
+    shutdown = request.environ.get('werkzeug.server,shutdown')
+    if not shutdown:
+        abort(500)
+    shutdown()
+    return '-----Shutting down------'
+
+@main.after_app_request
+def after_request(response):
+    for query in get_debug_queries():
+        if query.duration >= current_app.config['FLASKY_SLOW_DB_QUERY_TIME']:
+            current_app.logger.warning(
+                'Slow query: %s\nParameters: %s\nDuration: %fs\nContext: %s\n'
+                % (query.statement, query.parameters, query.duration,
+                   query.context))
+    return response
+
 

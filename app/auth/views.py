@@ -24,6 +24,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash(u'您已退出登陆')
     return redirect(url_for('auth.login'))
 
 
