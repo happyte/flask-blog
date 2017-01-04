@@ -37,9 +37,9 @@ class Role(db.Model):
             role = Role.query.filter_by(name=r).first()
             if role is None:
                 role = Role(name=r)
-            role.permissions = roles[r][0]
-            role.default = roles[r][1]
-            db.session.add(role)
+                role.permissions = roles[r][0]
+                role.default = roles[r][1]
+                db.session.add(role)
         db.session.commit()
 
     @staticmethod

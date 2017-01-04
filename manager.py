@@ -26,7 +26,6 @@ def dev():
 # 单元测试
 @manager.command
 def test(coverage=False):
-    print '--------%s-------' % coverage
     if coverage and not os.environ.get('FLASK_COVERAGE'):
         import sys
         os.environ['FLASK_COVERAGE'] = '1'
@@ -46,11 +45,24 @@ def test(coverage=False):
         COV.erase()
 
 @manager.command
+def profile(length=25, profile_dir=None):
+    from werkzeug.contrib.profiler import ProfilerMiddleware
+    app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[length],
+                                      profile_dir=profile_dir)
+    app.run()
+
+@manager.command
 def deploy():
-    from app.models import Role
+    from flask_migrate import upgrade
+    from app.models import Role, User
+
+    # 更新迁移数据库
     upgrade()
-    Role.seed()
+    # # 创建角色
+    Role.insert_roles()
+    # 所有的用户都关注自己
+    User.add_self_follows()
+
 
 if __name__ == '__main__':
-    # app.run()
     manager.run()

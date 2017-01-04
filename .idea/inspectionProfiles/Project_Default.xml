@@ -4,7 +4,9 @@
     <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="TYPO" enabled_by_default="true">
       <option name="ignoredPackages">
         <value>
-          <list size="0" />
+          <list size="1">
+            <item index="0" class="java.lang.String" itemvalue="psycopg2" />
+          </list>
         </value>
       </option>
     </inspection_tool>
