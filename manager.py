@@ -62,10 +62,11 @@ def profile(length=25, profile_dir=None):
 def deploy():
     from flask_migrate import upgrade
     from app.models import Role, User
+    db.create_all()
 
     # 更新迁移数据库
     upgrade()
-    # # 创建角色
+    # 创建角色
     Role.insert_roles()
     # 所有的用户都关注自己
     User.add_self_follows()
