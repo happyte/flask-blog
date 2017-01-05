@@ -16,10 +16,10 @@ Flask-Mail==0.9.1
 Flask-Migrate==2.0.1
 Flask-Moment==0.5.1
 Flask-PageDown==0.2.2
-Flask-SQLAlchemy==2.1
+Flask-SQLAlchemy==1.0
 Flask-WTF==0.13.1
 Markdown==2.6.7
-SQLAlchemy==1.1.4
+SQLAlchemy==0.9.9
 WTForms==2.1
 alembic==0.8.9
 bleach==1.5.0
