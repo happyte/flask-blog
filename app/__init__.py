@@ -2,7 +2,6 @@
 from os import path, environ
 from flask import Flask, request
 from flask_bootstrap import Bootstrap
-from flask_nav.elements import *
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_mail import Mail
