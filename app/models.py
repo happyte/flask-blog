@@ -37,15 +37,11 @@ class Role(db.Model):
             role = Role.query.filter_by(name=r).first()
             if role is None:
                 role = Role(name=r)
-                role.permissions = roles[r][0]
-                role.default = roles[r][1]
-                db.session.add(role)
+            role.permissions = roles[r][0]
+            role.default = roles[r][1]
+            db.session.add(role)
         db.session.commit()
 
-    @staticmethod
-    def seed():
-        db.session.add_all(map(lambda r: Role(name=r), ['Guests', 'Administrator']))
-        db.session.commit()
 
 class Follow(db.Model):
     __tablename__ = 'follows'
@@ -97,7 +93,7 @@ class User(UserMixin, db.Model):
             if self.email == current_app.config['FLASK_ADMIN']:                  # 邮箱与管理者邮箱相同
                 self.itsrole = Role.query.filter_by(permissions=0xff).first()    # 权限为管理者
             else:
-                self.itsrole =  Role.query.filter_by(default=True).first()       # 默认用户
+                self.itsrole = Role.query.filter_by(default=True).first()       # 默认用户
 
     def follow(self, user):                          # 关注user
         if not self.is_following(user):
