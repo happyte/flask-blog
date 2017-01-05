@@ -62,7 +62,6 @@ def profile(length=25, profile_dir=None):
 def deploy():
     from flask_migrate import upgrade
     from app.models import Role, User
-    db.create_all()
 
     # 更新迁移数据库
     upgrade()
