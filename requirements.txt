@@ -24,5 +24,6 @@ WTForms==2.1
 alembic==0.8.9
 bleach==1.5.0
 blinker==1.4
-html5lib==1.0b10
+html5lib==1.0b3
 six==1.10.0
+psycopg2==2.6.2
