@@ -26,4 +26,4 @@ bleach==1.5.0
 blinker==1.4
 html5lib==1.0b3
 six==1.10.0
-psycopg2==2.6.2
+psycopg2==2.5.1
