@@ -13,9 +13,6 @@ def send_async_mail(app, msg):
 
 # 四个参数分别为(1.接收者邮箱地址 2.主题 3.模板 4.可变参数)
 def send_mail(to, subject, template, **kw):
-    print '='*50
-    print os.environ.get('MAIL_USERNAME')
-    print os.environ.get('MAIL_PASSWORD')
     app = current_app._get_current_object()
     msg = Message(subject=subject, sender=app.config['FLASKY_MAIL_SENDER'],
                   recipients=[to])                               # 主题,发送者(从环境变量中读出),接收者

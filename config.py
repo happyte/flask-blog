@@ -7,7 +7,7 @@ class Config:
     SSL_DISABLE = False
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True
-    MAIL_SERVER = 'smtp.qq.com'           # 配置163邮箱的smtp服务,首先你的邮箱要开启smtp服务
+    MAIL_SERVER = 'smtp.163.com'           # 配置163邮箱的smtp服务,首先你的邮箱要开启smtp服务
     MAIL_PORT = 465                       # 端口为465
     MAIL_USE_SSL = True                   # TLS服务失败，要用SSL
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
@@ -33,7 +33,6 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
-    print 'database:%s' % os.environ.get('DEV_DATABASE_URL')
 
 # 生产坏境
 class ProductionConfig(Config):

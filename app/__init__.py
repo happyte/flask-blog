@@ -27,7 +27,6 @@ login_manager.login_view = 'auth.login'           # login_view设置登陆页面
 basedir = path.abspath(path.dirname(__file__))
 
 def create_app(config_name):
-    print '-------config_name:%s' % config_name
     app = Flask(__name__)
     app.config.from_object(conifg[config_name])   # 配置都在config.py这个文件中
     conifg[config_name].init_app(app)
