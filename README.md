@@ -16,5 +16,12 @@
 
 ## 部署完成后的效果
 ![image](https://github.com/happyte/flask-blog/blob/master/images/2.png)
+
+
 ![image](https://github.com/happyte/flask-blog/blob/master/images/3.png)
+
+
 ![image](https://github.com/happyte/flask-blog/blob/master/images/4.png)
+
+
+![image](https://github.com/happyte/flask-blog/blob/master/images/5.png)
