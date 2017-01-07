@@ -7,12 +7,13 @@ class Config:
     SSL_DISABLE = False
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True
-    MAIL_SERVER = 'smtp.163.com'          # 配置163邮箱的smtp服务,首先你的邮箱要开启smtp服务
+    MAIL_SERVER = 'smtp.qq.com'           # 配置163邮箱的smtp服务,首先你的邮箱要开启smtp服务
     MAIL_PORT = 465                       # 端口为465
     MAIL_USE_SSL = True                   # TLS服务失败，要用SSL
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     FLASK_ADMIN = os.environ.get('FLASK_ADMIN')
+    FLASKY_MAIL_SENDER = os.environ.get('MAIL_USERNAME')
     POSTS_PER_PAGE = os.environ.get('POSTS_PER_PAGE')
     FLASKY_SLOW_DB_QUERY_TIME = 0.5
 

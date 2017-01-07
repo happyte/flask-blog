@@ -17,7 +17,7 @@ def send_mail(to, subject, template, **kw):
     print os.environ.get('MAIL_USERNAME')
     print os.environ.get('MAIL_PASSWORD')
     app = current_app._get_current_object()
-    msg = Message(subject=subject, sender='zs511129@163.com',
+    msg = Message(subject=subject, sender=app.config['FLASKY_MAIL_SENDER'],
                   recipients=[to])                               # 主题,发送者(从环境变量中读出),接收者
     msg.body = render_template(template + '.txt', **kw)          # 文本内容
     msg.html = render_template(template + '.html', **kw)         # 文本渲染

@@ -62,8 +62,8 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(64))         # 用户信息中的昵称
     location = db.Column(db.String(64))     # 用户地址
     about_me = db.Column(db.Text())         # 用户介绍
-    member_since = db.Column(db.DATETIME, default=datetime.utcnow)             # 注册时间,datetime.utcnow不用带上括号
-    last_seen = db.Column(db.DATETIME, default=datetime.utcnow)                # 上次访问时间
+    member_since = db.Column(db.DateTime, default=datetime.utcnow)             # 注册时间
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)               # 上次访问时间
     posts = db.relationship('Post', backref='author', lazy='dynamic',
                             cascade='all, delete-orphan')            # 一个用户有多条发表，一对多
     followed = db.relationship('Follow', foreign_keys=[Follow.follower_id],      # 该用户关注了其它用户，对于其它用户而言，该用户就是它的追随者(关注者)
