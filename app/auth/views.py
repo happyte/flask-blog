@@ -35,9 +35,9 @@ def register():
     if form.validate_on_submit():
         user = User(username=form.username.data,
                     password=form.password.data, email=form.email.data)  # 新添加一个用户到数据库中
-        User.add_self_follows()               # 把自己添加成自己的关注
         db.session.add(user)
         db.session.commit()
+        User.add_self_follows()           # 把自己添加成自己的关注
         token = user.generate_confirm_token()                            # 产生一个令牌
         send_mail(user.email, u'请确认您的帐号', 'confirm', user=user, token=token)   # 发送邮件
         flash(u'有一份邮件已经发往您的邮箱')

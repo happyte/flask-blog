@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        #loginlength {
+            width: 35%;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
     <div class="page-header">
         <div class="container">
