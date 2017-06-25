@@ -3,13 +3,31 @@
 {% import "include/_macros.html" as macros %}
 
 {% block content %}
-    {% set post_body = True %}          <!--需要显示文章内容-->
-    {% include "include/_post.html" %}       <!--发表的博客文章-->
-    <div class="comment-from">               <!-- 评论表单-->
-        {{ wtf.quick_form(form) }}
+{{ super() }}
+<div class="container">
+    <div class="page-header ">
+        <h1>{{ posts[0].title }}</h1>
     </div>
-    {% include "include/_comment.html" %}
-    <div class="pagination">
-        {{ macros.pagination_widget(pagination, 'main.post', id=posts[0].id) }}
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 well">
+            {% set post_body = True %}
+            <!--需要显示文章内容-->
+            {% include "include/_post.html" %}
+            {% include "include/_comment.html" %}
+            <nav class="text-center">
+            <div class="pagination">
+                {{ macros.pagination_widget(pagination, 'main.post', id=posts[0].id) }}
+            </div>
+            </nav>
+        </div>
     </div>
+    <div class="row">
+        <div class="col-md-12 well">
+            <!-- 评论表单-->
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+</div>
 {% endblock %}
