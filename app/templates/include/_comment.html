@@ -1,19 +1,27 @@
-<ul class="comments">
+<div class="comments">
     {% for comment in comments %}
-        <li class="comment">
-            <div class="comment-thumbail">
-                <a href="{{ url_for('main.user',username=comment.author.username)}}">
-                    <img class="img-rounded profile-thumbail"
-                    src="{{ comment.author.gravatar(32) }}">
-                </a>
-            </div>
-            <div class="comment-content">
-                <div class="comment-date">{{ moment(comment.timestamp).fromNow() }}</div>
-                <div class="comment-author">
+        <div class="comment panel panel-default">
+            <div class="panel-heading">
+                <span class="comment-thumbail img-circle">
+                    <a href="{{ url_for('main.user',username=comment.author.username)}}">
+                        <img class="img-rounded profile-thumbail"
+                        src="{{ comment.author.gravatar(16) }}">
+                    </a>
+                </span>
+                <span class="comment-author">
                     <a href="{{ url_for('main.user',username=comment.author.username) }}">
                         {{ comment.author.username }}
                     </a>
-                </div>
+                </span>
+                <span class="pull-right">
+                    <span class="comment-date label label-default">{{ moment(comment.timestamp).fromNow() }}</span>
+                    <span class="label label-default">评论</span>
+
+                </span>
+
+            </div>
+
+            <div class="panel-body">
                 <div class="comment-body">
                     {% if comment.disabled %}                    <!--评论被禁止了-->
                         <p><i>该条评论已经被协管员禁止了</i></p>
@@ -41,6 +49,6 @@
                     {% endif %}
                 {% endif %}
             </div>
-        </li>
+        </div>
     {% endfor %}
-</ul>
+</div>

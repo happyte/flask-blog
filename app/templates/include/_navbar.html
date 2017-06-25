@@ -1,21 +1,15 @@
 
-<nav class="navbar navbar-default navbar-static-top">
+<div class="navbar navbar-primary navbar-fixed-top" style="box-shadow: 0px 0px 5px #000000;">
     <div class="container-fluid">
         <div class="navbar-header">
-            <button aria-controls="navbar"
-                    aria-expanded="false"
-                    class="navbar-toggle collapsed"
-                    data-target="#7bc75dbef69e41ff2452de70079c8ece1320ea7c"
-                    data-toggle="collapse" type="button">
-                <span class="sr-only">Toggle navigation</span>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-material-light-blue-collapse">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <span class="navbar-brand">Flask</span>
+            <a class="navbar-brand" href="javascript:void(0)">Flask</a>
         </div>
-        <div class="navbar-collapse collapse"
-             id="7bc75dbef69e41ff2452de70079c8ece1320ea7c">
+        <div class="navbar-collapse collapse navbar-material-light-blue-collapse">
             <ul class="nav navbar-nav">
                 <li {% if url_for('main.index') is current_link %}class="active"{% endif %}>
                     <a href="{{ url_for('main.index') }}" >主页</a>
@@ -47,4 +41,4 @@
             </ul>
         </div>
     </div>
-</nav>
+</div>

@@ -1,51 +1,74 @@
-<ul class="posts">
+<div class="posts" style="margin-top: 20px">
     {% for post in posts %}
-        <li class="post">
-            <div class="profile-thumbail">
-                <a href="{{ url_for('main.user',username=post.author.username) }}">
-                    <img class="img-rounded profile-thumbail"
-                            src="{{ post.author.gravatar(40) }}">
-                </a>
-            </div>
-            <div class="post-content">
-                <div class="post-date">{{ moment(post.timestamp).fromNow() }}</div>
-                <div class="post-author">
-                    <a href="{{ url_for('main.user',username=post.author.username) }}">
-                        {{ post.author.username }}
-                    </a>
-                </div>
-                <div class="post-title">
-                    <span class="link_title">
-                        {{ post.title }}
-                    </span>
-                </div>
-                {% if post_body %}
-                    <div class="post-body">
-                        {% if post.body_html %}
-                            {{ post.body_html|safe }}
-                        {% else %}
-                            {{ post.body }}
-                        {% endif %}
-                    </div>
+    {% if post.author.can(Permission.WRITE_ARTICLES) %}
+    <!--<ul class="post well">-->
+    <div class="post panel panel-default">
+        <div class="panel-heading" style="display: flex; justify-content: space-between;">
+            <span>
+                <span class="profile-thumbail">
+                        <a href="{{ url_for('main.user',username=post.author.username) }}">
+                            <img class="img-circle profile-thumbail" src="{{ post.author.gravatar(16) }}">
+                        </a>
+                </span>
+                <span class="post-author">
+                        <a href="{{ url_for('main.user',username=post.author.username) }}">
+                            {{ post.author.username }}
+                        </a>
+                </span>
+            </span>
+            <span class="post-footer">
+                <span class="label">{{ moment(post.timestamp).fromNow() }}</span>
+                {% if current_user == post.author %}
+                <span class="label label-default"><a href="{{ url_for('main.edit',id=post.id) }}">编辑</a></span>
+                {% elif current_user.is_administrator() %}
+                <span class="label label-default"><a href="{{ url_for('main.edit',id=post.id) }}">编辑[管理员]</a></span>
                 {% endif %}
-                <div class="post-footer">
-                    {% if current_user == post.author %}
-                        <a href="{{ url_for('main.edit',id=post.id) }}">
-                            <span class="label label-primary">编辑</span>
-                        </a>
-                    {% elif current_user.is_administrator() %}
-                        <a href="{{ url_for('main.edit',id=post.id) }}">
-                            <span class="label label-danger">编辑[管理员]</span>
-                        </a>
+                <span class="label label-default"><a href="{{ url_for('main.post', id=post.id) }}">文章链接</a></span>
+                <span class="label label-default"><a href="{{ url_for('main.post', id=post.id) }}">{{ post.comments.count() }}个评论</a></span>
+            </span>
+        </div>
+        <div class="panel-body">
+            <div class="post-title">
+                <span class="link_title">
+                        <h1> {{ post.title }} </h1>
+                        <hr />
+                </span>
+            </div>
+            {% if post_body %}
+            <div class="post-content">
+                <div class="post-body">
+                    {% if post.body_html %}
+                        {{ post.body_html|safe }}
+                    {% else %}
+                        {{ post.body }}
                     {% endif %}
-                    <a href="{{ url_for('main.post', id=post.id) }}">
-                        <span class="label label-default">文章链接</span>
-                    </a>
-                    <a href="{{ url_for('main.post', id=post.id) }}">
-                        <span class="label label-primary">{{ post.comments.count() }}个评论</span>
-                    </a>
                 </div>
             </div>
-        </li>
+            {% else %}
+            <div class="post-content">
+                <div class="post-body" style="max-height:300px; overflow: hidden;">
+                    {% if post.body_html %}
+                        {{ post.body_html|safe }}
+                    {% else %}
+                        {{ post.body }}
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+
+
+    {% endif %}
+    <!--</ul>-->
     {% endfor %}
-</ul>
+</div>
+
+<style>
+
+.post-body img{ max-width: 80%; display: block; }
+
+</style>
