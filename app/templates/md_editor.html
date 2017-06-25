@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block content %}
+    {{ super() }}
+    <div class="container">
+        <div class="row well">
+            <form method="post" class="form " role="form">
+            {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.title.label }}
+                    {{ form.title(id="title", class="form-control" )}}
+                </div>
+                <div class="form-group">
+                    {{ form.body.label }}
+                    <div class="row">
+                        <div class="col-md-6 " >
+                            <div class="panel panel-default", style="height: 600px;">
+                                <div class="panel-heading", style="height: 50px;">编辑区</div>
+                                <div class="panel-body", style="height: 550px;">
+                                    {{ form.body(only_input=True, style="height: 100%;width:100%;") }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" >
+                            <div class="panel panel-default", style="height: 600px;">
+                                <div class="panel-heading", style="height: 50px;">预览区</div>
+                                <div class="panel-body", style="height: 550px;">
+                                    {{ form.body(only_preview=True) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group pull-right">
+                    {{ form.submit(class="btn btn-raised") }}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+    #flask-pagedown-body{
+        border-style: none;
+        resize: none;
+    }
+
+    .flask-pagedown-preview{
+        overflow-x:hidden;
+        overflow-y: auto;
+        height: 100%;
+    }
+
+    .flask-pagedown{
+        height: 100%;
+    }
+
+    .panel-body img{ max-width: 100%; display: block; }
+    </style>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.6.4/showdown.min.js"></script>
+    <script type="text/javascript">
+        var converter = new showdown.Converter();
+        function flask_pagedown_converter(text){
+            return converter.makeHtml(text);
+        }
+    </script>
+{% endblock %}
