@@ -13,7 +13,8 @@ class PostForm(FlaskForm):
     submit = SubmitField(label=u'提交')
 
 class CommentForm(FlaskForm):
-    body = PageDownField(label=u'发表评论', validators=[DataRequired()])
+    body = PageDownField(label=u'发表评论', validators=[DataRequired()],
+                         render_kw={'rows': 5})
     submit = SubmitField(label=u'提交')
 
 

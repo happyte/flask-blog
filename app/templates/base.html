@@ -5,9 +5,23 @@
     {% endblock %}
 
     {% block styles %}
-    {{ super() }}
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/cerulean/bootstrap.min.css">
+        {{ super() }}
+    <!-- Material Design fonts -->
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- Bootstrap Material Design -->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap-material-design.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='ripples.min.css') }}">
+    <!-- Dropdown.js -->
+        <link href="{{ url_for('static',filename='jquery.dropdown.css') }}" rel="stylesheet">
+    <!-- codehilite -->
+        <link href="{{ url_for('static',filename='codehilite.css') }}" rel="stylesheet">
+    <style>
+    body {
+        padding-top: 70px;
+    }
+    </style>
+
     {% endblock %}
 
     {% block navbar %}
@@ -24,4 +38,16 @@
         {{ super() }}
         {{ moment.include_moment() }}
         {{ moment.lang("zh-CN") }}
+
+        <script src="{{ url_for('static',filename='material.js') }}"></script>
+        <script src="{{ url_for('static',filename='ripples.min.js') }}"></script>
+        <script>
+        $.material.init();
+        </script>
+
+        <!-- Dropdown.js -->
+        <script src="{{ url_for('static',filename='jquery.dropdown.js') }}"></script>
+        <script>
+        $("select").dropdown();
+        </script>
     {% endblock %}
