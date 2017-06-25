@@ -1,5 +1,5 @@
 # 基于flask的博客系统搭建
-- 1.部署在阿里云的链接为:http://123.57.132.125, 欢迎大家使用,目前360和ie浏览器不兼容。
+- 1.部署在阿里云的链接为:http://123.57.132.125, 目前阿里云部署的不是新版程序,新版程序实际效果如下图片所示,之后我会重新部署,360安全浏览器和ie浏览器不兼容。
 - 2.部署在heroku网站的链接为:https://hlin2017.herokuapp.com
 - 3.下载代码到本地，先建立一个virtualenv坏境，我用的是pycharm软件，直接可以建立flask坏境,如下图所示:
 ![image](https://github.com/happyte/flask-blog/blob/master/images/1.png)
@@ -15,7 +15,7 @@
 - 7.部署程序，`python manager.py deploy`
 - 8.在本地运行程序,`python manager.py runserver`打开http://127.0.0.1:5000端口查看, 按Ctrl+C退出程序。
 
-## 部署完成后的效果
+## 实际运行的效果
 ![image](https://github.com/happyte/flask-blog/blob/master/images/2.png)
 
 
