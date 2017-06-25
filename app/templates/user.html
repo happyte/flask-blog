@@ -1,60 +1,54 @@
 {% extends 'base.html' %}
+{% block title %}个人资料{% endblock %}
 {% block content %}
-    <div class="page-header">
-        {% for message in get_flashed_messages() %}
-            <div class="alert alert-warning">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                {{ message }}
-            </div>
-        {% endfor %}
-        <img class="img-rounded profile-thumbail" src="{{ user.gravatar(size=256) }}">
-        <div class="profile-header">
+{{ super() }}
+<div class="container">
+    <div class="row well">
+        <div class=" col-md-3 col-xs-4">
+            <img class="img-circle profile-thumbail pull-right" src="{{ user.gravatar(size=128) }}" >
+        </div>
+        <div class="profile-header col-md-9 col-xs-8">
             <h1>{{ user.username }}</h1>
             {% if user.name or user.location %}
             <p>
-                {% if user.name %}{{ user.name }}{% endif %}
-                {% if user.location %}
-                    <a href="http://map.baidu.com/?q={{ user.location }}">{{ user.location }}</a>
-                {% endif %}
+                {% if user.name %}{{ user.name }}{% endif %} {% if user.location %}
+                <a href="http://map.baidu.com/?q={{ user.location }}">{{ user.location }}</a> {% endif %}
             </p>
-            {% endif %}
-            {% if current_user.is_authenticated %}
+            {% endif %} {% if current_user.is_authenticated %}
             <p>
                 <a href="mailto:{{ user.email }}">{{ user.email }}</a>
             </p>
-            {% endif %}
-            {% if user.about_me %}
+            {% endif %} {% if user.about_me %}
             <p>{{ user.about_me }}</p>
             {% endif %}
             <p>注册时间:{{ moment(user.member_since).format('L') }}</p>
             <p>上次登陆时间:{{ moment(user.last_seen).fromNow() }}</p>
             <p>
                 {% if user == current_user %}
-                <a class="btn btn-default" href="{{ url_for('main.edit_profile') }}">
+                <a class="btn btn-raised" href="{{ url_for('main.edit_profile') }}">
                     编辑信息
-                </a>
-                {% endif %}
-                {% if current_user.is_administrator() %}
+                </a> {% endif %} {% if current_user.is_administrator() %}
                 <a class="btn btn-danger" href="{{ url_for('main.edit_profile_admin', id=user.id) }}">
                     编辑信息[管理员]
-                </a>
-                {% endif %}
+                </a> {% endif %}
             </p>
-            {% if current_user.can(Permission.FOLLOW) and user != current_user %}    <!--当前用户有关注的权限且不是自己,可以有follow和unfollow-->
-                {% if not current_user.is_following(user) %}
-                    <a href="{{ url_for('main.follow', username=user.username) }}" class="btn btn-primary">关注</a>
-                {% else %}
-                    <a href="{{ url_for('main.unfollow', username=user.username) }}" class="btn btn-default">不关注</a>
-                {% endif %}
+            {% if current_user.can(Permission.FOLLOW) and user != current_user %} {% if not current_user.is_following(user) %}
+            <a href="{{ url_for('main.follow', username=user.username) }}" class="btn btn-primary">关注</a> {% else %}
+            <a href="{{ url_for('main.unfollow', username=user.username) }}" class="btn btn-default">不关注</a> {% endif %}
             {% endif %}
             <a href="{{ url_for('main.followers',username=user.username) }}">
-                粉丝人数:<span class="badge">{{ user.followers.count() - 1 }}</span>
+                <span class="badge">粉丝人数: {{ user.followers.count() - 1 }}</span>
             </a>
             <a href="{{ url_for('main.followed_by',username=user.username) }}">
-                关注人数:<span class="badge">{{ user.followed.count() - 1 }}</span>
+                <span class="badge">关注人数: {{ user.followed.count() - 1 }}</span>
             </a>
         </div>
-        <h3>{{ user.username }}发表的文章</h3>
-        {% include 'include/_post.html' %}
     </div>
+    <div class="row">
+        <div class="col-md-12 col-xs-12 well">
+            <h3>{{ user.username }}发表的文章</h3>
+            {% include 'include/_post.html' %}
+        </div>
+    </div>
+</div>
 {% endblock %}
