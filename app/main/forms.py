@@ -8,13 +8,11 @@ from ..models import Role
 # 首页的博客文章表单
 class PostForm(FlaskForm):
     title = StringField(label=u'博客标题', validators=[DataRequired()], id='titlecode')
-    body = PageDownField(label=u'博客内容', validators=[DataRequired()],
-                         render_kw={'rows': 20})
+    body = PageDownField(label=u'博客内容', validators=[DataRequired()])
     submit = SubmitField(label=u'提交')
 
 class CommentForm(FlaskForm):
-    body = PageDownField(label=u'发表评论', validators=[DataRequired()],
-                         render_kw={'rows': 5})
+    body = PageDownField(label=u'发表评论', validators=[DataRequired()])
     submit = SubmitField(label=u'提交')
 
 

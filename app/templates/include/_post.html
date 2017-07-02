@@ -46,7 +46,7 @@
             </div>
             {% else %}
             <div class="post-content">
-                <div class="post-body" style="max-height:300px; overflow: hidden;">
+                <div class="post-body" style="max-height:300px;overflow: hidden;">
                     {% if post.body_html %}
                         {{ post.body_html|safe }}
                     {% else %}
@@ -69,6 +69,6 @@
 
 <style>
 
-.post-body img{ max-width: 80%; display: block; }
+.post-body img{ max-width: 100%; display: block; }
 
 </style>

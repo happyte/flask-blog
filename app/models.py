@@ -317,9 +317,12 @@ class Post(db.Model):
     def on_body_changed(target, value, oldvalue, initiator):
         allow_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
                       'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                      'h1', 'h2', 'h3', 'p', 'span', 'code', 'pre']
-        target.body_html = bleach.linkify(bleach.clean(markdown(value, output_format='html'),
-                                                       tags=allow_tags, strip=True))
+                      'h1', 'h2', 'h3', 'p', 'span', 'code', 'pre',
+                      'img', 'hr', 'div']
+        allow_attributes = ['src', 'alt', 'href', 'class']
+        target.body_html = bleach.linkify(bleach.clean(markdown(value, output_format='html',extensions=['markdown.extensions.extra','markdown.extensions.codehilite']),
+                                                       tags=allow_tags, attributes=allow_attributes, strip=True))
+
 
 @login_manager.user_loader      # 加载用户的回调函数,成功后得到当前用户
 def load_user(user_id):
